@@ -2,6 +2,8 @@ import os
 from flask import Flask, flash, request, redirect, url_for, send_from_directory, Response, jsonify, send_file
 from werkzeug.utils import secure_filename
 import fileUtil as fileUtil
+import speechUtil as speechUtil
+from random import randrange
 
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf'}
@@ -41,6 +43,19 @@ def upload_file():
         data = {'audio':fileNameWithoutExt+".mp3"}
         return jsonify(data)
 
+    return Response("Something went wrong",status=500)
+
+@app.route('/text', methods=['POST'])
+def upload_text():
+    text = request.form['text']
+    print(text)
+
+    randNum = randrange(1,200)
+
+    filename = secure_filename("temp" + str(randNum))
+    speechUtil.synthesize_and_save_to_file(text, filename)
+    data = {'audio':filename+".mp3"}
+    return jsonify(data)
 
     return Response("Something went wrong",status=500)
 
