@@ -1,6 +1,7 @@
 import os
 from flask import Flask, flash, request, redirect, url_for, send_from_directory, Response, jsonify
 from werkzeug.utils import secure_filename
+import fileUtil as fileUtil
 
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf'}
@@ -34,6 +35,7 @@ def upload_file():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        fileUtil.readFromFile(file.filename)
         return Response("File uploaded successfully",status=201)
 
     return Response("Something went wrong",status=500)
