@@ -13,4 +13,5 @@ def saveToFile():
 def synthesize_and_save_to_file(text, fileName):
     engine = pyttsx3.init()
     engine.save_to_file(text, "./output/" + fileName + '.mp3')
+    # engine.save_to_file(text, clientPath + fileName + '.mp3')
     engine.runAndWait()
