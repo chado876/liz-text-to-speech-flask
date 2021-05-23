@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, request, redirect, url_for, send_from_directory, Response
+from flask import Flask, flash, request, redirect, url_for, send_from_directory, Response, jsonify
 from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = './uploads'
@@ -11,6 +11,11 @@ app.config['SECRET_KEY'] = "liz"
 app.config['SESSION_TYPE'] = 'filesystem' 
 app.config['SESSION_PERMANENT']= False
 
+
+@app.route('/test')
+def hello():
+    data = {'res':'Hello World!'}
+    return jsonify(data)
 
 
 def allowed_file(filename):
