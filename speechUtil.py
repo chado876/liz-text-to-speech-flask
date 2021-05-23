@@ -5,3 +5,12 @@ def synthesize(text):
     engine.say(text)
     engine.runAndWait()
 
+def saveToFile():
+    engine = pyttsx3.init()
+    engine.save_to_file('Hello World', 'test.mp3')
+    engine.runAndWait()
+
+def synthesize_and_save_to_file(text, fileName):
+    engine = pyttsx3.init()
+    engine.save_to_file(text, fileName + '.mp3')
+    engine.runAndWait()
