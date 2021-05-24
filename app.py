@@ -50,7 +50,7 @@ def upload_text():
     text = request.form['text']
     print(text)
 
-    randNum = randrange(1,200)
+    randNum = randrange(1,900)
 
     filename = secure_filename("temp" + str(randNum))
     speechUtil.synthesize_and_save_to_file(text, filename)
