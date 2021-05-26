@@ -3,7 +3,7 @@ import os
 import glob
 import PyPDF2
 import docx2txt
-
+from pptx import Presentation
 
 
 def readFromFile(fileName):
@@ -31,6 +31,18 @@ def readFromFile(fileName):
         docxOutput = docx2txt.process(filePath)
         print("DOCX output is: " + docxOutput)
         speechUtil.synthesize_and_save_to_file(docxOutput, fileNameWithoutExt)
+    elif filetype == 'pptx':
+        pptOutput = ''
+        ppt = Presentation(filePath)
+        print(ppt)
+        for slide in ppt.slides:
+            for shape in slide.shapes:
+                if hasattr(shape, "text"):
+                    pptOutput += shape.text
+        print("PPTX output is: " + pptOutput)
+        speechUtil.synthesize_and_save_to_file(pptOutput, fileNameWithoutExt)
+
+
 
 def clean_up_files():
     files = glob.glob('output/*')

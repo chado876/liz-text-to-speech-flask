@@ -6,7 +6,7 @@ import speechUtil as speechUtil
 from random import randrange
 
 UPLOAD_FOLDER = './uploads'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'docx'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'docx', 'pptx'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -35,11 +35,13 @@ def upload_file():
 
     file = request.files['file']
 
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
+    filenameWithoutSpaces = file.filename.replace(" ", "_")
+
+    if file and allowed_file(filenameWithoutSpaces):
+        filename = secure_filename(filenameWithoutSpaces)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        fileUtil.readFromFile(file.filename)
-        fileNameWithoutExt = ( file.filename.rsplit( ".", 1 )[ 0 ] )
+        fileUtil.readFromFile(filename)
+        fileNameWithoutExt = (filename.rsplit( ".", 1 )[ 0 ] )
 
         data = {'audio':fileNameWithoutExt+".mp3"}
         return jsonify(data)
