@@ -27,6 +27,7 @@ def allowed_file(filename):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    fileUtil.clean_up_files()
     # check if the post request has the file part
     if 'file' not in request.files:
         flash('No file part')
@@ -47,6 +48,7 @@ def upload_file():
 
 @app.route('/text', methods=['POST'])
 def upload_text():
+    fileUtil.clean_up_files()
     text = request.form['text']
     print(text)
 
