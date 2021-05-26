@@ -2,6 +2,8 @@ import speechUtil as speechUtil
 import os
 import glob
 import PyPDF2
+import docx2txt
+
 
 
 def readFromFile(fileName):
@@ -23,8 +25,12 @@ def readFromFile(fileName):
         for i in range(totalPages):
             page = pdfReader.getPage(i)
             output += page.extractText()
-        print("PDF output is:" + output)
+        print("PDF output is: " + output)
         speechUtil.synthesize_and_save_to_file(output, fileNameWithoutExt)
+    elif filetype == 'docx':
+        docxOutput = docx2txt.process(filePath)
+        print("DOCX output is: " + docxOutput)
+        speechUtil.synthesize_and_save_to_file(docxOutput, fileNameWithoutExt)
 
 def clean_up_files():
     files = glob.glob('output/*')
