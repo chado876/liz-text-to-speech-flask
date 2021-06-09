@@ -3,7 +3,9 @@ from flask import Flask, flash, request, redirect, url_for, send_from_directory,
 from werkzeug.utils import secure_filename
 import fileUtil as fileUtil
 import speechUtil as speechUtil
+import articleUtil as articleUtil
 from random import randrange
+
 
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'docx', 'pptx'}
@@ -27,26 +29,30 @@ def allowed_file(filename):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    fileUtil.clean_up_files()
-    # check if the post request has the file part
-    if 'file' not in request.files:
-        flash('No file part')
-        return Response("Bad Request",status=400)
+        fileUtil.clean_up_files()
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return Response("Bad Request",status=400)
 
-    file = request.files['file']
+        file = request.files['file']
 
-    filenameWithoutSpaces = file.filename.replace(" ", "_")
+        filenameWithoutSpaces = file.filename.replace(" ", "_")
 
-    if file and allowed_file(filenameWithoutSpaces):
-        filename = secure_filename(filenameWithoutSpaces)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        fileUtil.readFromFile(filename)
-        fileNameWithoutExt = (filename.rsplit( ".", 1 )[ 0 ] )
+        if file and allowed_file(filenameWithoutSpaces):
+            filename = secure_filename(filenameWithoutSpaces)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
+            try:
+                task = fileUtil.readFromFile(filename)
+                fileNameWithoutExt = (filename.rsplit( ".", 1 )[ 0 ] )
+                data = {'audio':fileNameWithoutExt+".mp3"}
+                if(task):
+                    return jsonify(data)
+            except:
+                return Response("Something went wrong, please check if your file is valid.",status=500)
 
-        data = {'audio':fileNameWithoutExt+".mp3"}
-        return jsonify(data)
 
-    return Response("Something went wrong",status=500)
 
 @app.route('/text', methods=['POST'])
 def upload_text():
@@ -61,10 +67,17 @@ def upload_text():
     data = {'audio':filename+".mp3"}
     return jsonify(data)
 
-    return Response("Something went wrong",status=500)
-
 @app.route('/audio/<string:name>', methods=['GET'])
 def get_file(name):
     return send_file("output/" + name, as_attachment=True)
+
+@app.route('/article', methods=['POST'])
+def process_article():
+    fileUtil.clean_up_files()
+    articleLink = request.form['articleLink']
+    print(articleLink)
+    articleAudioFile = articleUtil.process_article(articleLink)
+    data = {'audio':articleAudioFile+".mp3"}
+    return jsonify(data)
 
 app.run(port=5000)
