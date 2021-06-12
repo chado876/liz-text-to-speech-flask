@@ -4,13 +4,15 @@ import glob
 import PyPDF2
 import docx2txt
 from pptx import Presentation
-
+from nlp.lex.lexical_analyzer import LexicalAnalyzer
 
 def readFromFile(fileName):
     filePath = "uploads/" + fileName
     filetype = fileName.split('.')[-1]
     fileNameWithoutExt = ( fileName.rsplit( ".", 1 )[ 0 ] )
     success = True
+    text = ''
+    
     try:
         if filetype == 'txt':
             if is_file_empty(filePath):
@@ -18,38 +20,33 @@ def readFromFile(fileName):
                 raise Exception("File string is empty!")
             else:
                 with open(filePath,"r") as f:
-                    string = f.read()
-                    print("FILE TEXT IS: " + string)
-                    print(fileNameWithoutExt)
-                    speechUtil.synthesize_and_save_to_file(string, fileNameWithoutExt)
+                    text = f.read()
+                    speechUtil.synthesize_and_save_to_file(text, fileNameWithoutExt)
         elif filetype == 'pdf':
-            output = ''
             pdfFileObj = open(filePath, "rb")
             pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
             totalPages = pdfReader.numPages
             for i in range(totalPages):
                 page = pdfReader.getPage(i)
-                output += page.extractText()
-            print("PDF output is: " + output)
-            speechUtil.synthesize_and_save_to_file(output, fileNameWithoutExt)
+                text += page.extractText()
+            speechUtil.synthesize_and_save_to_file(text, fileNameWithoutExt)
         elif filetype == 'docx':
-            docxOutput = docx2txt.process(filePath)
-            print("DOCX output is: " + docxOutput)
-            speechUtil.synthesize_and_save_to_file(docxOutput, fileNameWithoutExt)
+            text = docx2txt.process(filePath)
+            speechUtil.synthesize_and_save_to_file(text, fileNameWithoutExt)
         elif filetype == 'pptx':
             pptOutput = ''
             ppt = Presentation(filePath)
-            print(ppt)
             for slide in ppt.slides:
                 for shape in slide.shapes:
                     if hasattr(shape, "text"):
-                        pptOutput += shape.text
-            print("PPTX output is: " + pptOutput)
-            speechUtil.synthesize_and_save_to_file(pptOutput, fileNameWithoutExt)
+                        text += shape.text
+            speechUtil.synthesize_and_save_to_file(text, fileNameWithoutExt)
     except:
         print("An error occurred!")
-    finally:
-        return success
+
+    LexicalAnalyzer.perform_lexical_analysis(text)
+    return success
+        
 
 
 

@@ -29,6 +29,7 @@ def allowed_file(filename):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    try:
         fileUtil.clean_up_files()
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -42,15 +43,16 @@ def upload_file():
         if file and allowed_file(filenameWithoutSpaces):
             filename = secure_filename(filenameWithoutSpaces)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            
-            try:
-                task = fileUtil.readFromFile(filename)
-                fileNameWithoutExt = (filename.rsplit( ".", 1 )[ 0 ] )
-                data = {'audio':fileNameWithoutExt+".mp3"}
-                if(task):
-                    return jsonify(data)
-            except:
-                return Response("Something went wrong, please check if your file is valid.",status=500)
+                        
+            task = fileUtil.readFromFile(filename)
+            fileNameWithoutExt = (filename.rsplit( ".", 1 )[ 0 ] )
+            data = {'audio':fileNameWithoutExt+".mp3"}
+            if(task):
+                return jsonify(data)
+            else:
+                return Response("Something went wrong, please check if your file is valid.",status=400)
+    except:
+        return Response("Something went wrong, please check if your file is valid.",status=500)
 
 
 
