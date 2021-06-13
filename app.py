@@ -83,4 +83,8 @@ def process_article():
     data = {'audio':articleAudioFile+".mp3"}
     return jsonify(data)
 
+@app.route('/parse-tree-pdf/download', methods=['GET'])
+def download_parse_tree_pdf():
+    return send_file("parse_output/parse-trees.pdf")
+
 app.run(port=5000)

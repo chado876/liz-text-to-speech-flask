@@ -61,6 +61,9 @@ def clean_up_files():
     files2 = glob.glob('uploads/*')
     for f in files2:
         os.remove(f)
+    files3 = glob.glob('parsed_output/*')
+    for f in files3:
+        os.remove(f)
 
 def is_file_empty(filePath):
     with open(filePath, 'r') as fileReader:
@@ -92,5 +95,5 @@ def generate_tree_pdf(extractions):
 
         merger.append('parse_output/' + pdf_file_name)
     
-    merger.write('parse-trees.pdf')
+    merger.write('parse_output/parse-trees.pdf')
     merger.close()
