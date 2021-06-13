@@ -5,7 +5,7 @@ from random import randrange
 from nlp.lex.lexical_analyzer import LexicalAnalyzer
 
 
-def process_article(articleLink):
+def process_article(articleLink, treeFileName):
     article = Article(articleLink)
     article.download()
     article.parse()
@@ -14,7 +14,7 @@ def process_article(articleLink):
 
     articleText = article.text
     print("Article text" + articleText)
-    LexicalAnalyzer.perform_lexical_analysis(articleText)
+    LexicalAnalyzer.perform_lexical_analysis(articleText, treeFileName)
     randNum = randrange(1,900)
     filename = "article" + str(randNum)
     speechUtil.synthesize_and_save_to_file(articleText, filename)

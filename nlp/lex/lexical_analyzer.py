@@ -6,7 +6,7 @@ from ..parse.parser import Parser
 
 class LexicalAnalyzer:
 
-  def perform_lexical_analysis(string):
+  def perform_lexical_analysis(string, treeFileName):
       sentences = Tokenizer.sentence_tokenizer(string) #split text into sentences
       tokens = Tokenizer.tokenize(string)
       two_gram_tokens = Tokenizer.n_gram_tokenize(2, tokens)
@@ -22,7 +22,7 @@ class LexicalAnalyzer:
         pos_sentence = (PosTagger.tag_pos(Tokenizer.tokenize(sentence)))
         pos_sentences.append(pos_sentence)
 
-      Parser.generate_parse_trees(pos_sentences)
+      Parser.generate_parse_trees(pos_sentences, treeFileName)
 
 
       print('Sentences: ', sentences)

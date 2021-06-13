@@ -44,10 +44,13 @@ def upload_file():
         if file and allowed_file(filenameWithoutSpaces):
             filename = secure_filename(filenameWithoutSpaces)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                        
-            task = fileUtil.readFromFile(filename)
+
+            randNum = randrange(1,900)
+            parse_tree_name = "parse-tree-"+str(randNum)+".pdf" 
+            task = fileUtil.readFromFile(filename, parse_tree_name)
             fileNameWithoutExt = (filename.rsplit( ".", 1 )[ 0 ] )
-            data = {'audio':fileNameWithoutExt+".mp3"}
+            data = {'audio':fileNameWithoutExt+".mp3",
+                    'tree':parse_tree_name}
             if(task):
                 return jsonify(data)
             else:
@@ -61,13 +64,17 @@ def upload_file():
 def upload_text():
     fileUtil.clean_up_files()
     text = request.form['text']
-    LexicalAnalyzer.perform_lexical_analysis(text)
+
+    randNum = randrange(1,900)
+    parse_tree_name = "parse-tree-"+str(randNum)+".pdf" 
+    LexicalAnalyzer.perform_lexical_analysis(text, parse_tree_name)
 
     randNum = randrange(1,900)
 
     filename = secure_filename("temp" + str(randNum))
     speechUtil.synthesize_and_save_to_file(text, filename)
-    data = {'audio':filename+".mp3"}
+    data = {'audio':filename+".mp3",
+            'tree':parse_tree_name}
     return jsonify(data)
 
 @app.route('/audio/<string:name>', methods=['GET'])
@@ -79,12 +86,15 @@ def process_article():
     fileUtil.clean_up_files()
     articleLink = request.form['articleLink']
     print(articleLink)
-    articleAudioFile = articleUtil.process_article(articleLink)
-    data = {'audio':articleAudioFile+".mp3"}
+    randNum = randrange(1,900)
+    parse_tree_name = "parse-tree-"+str(randNum)+".pdf" 
+    articleAudioFile = articleUtil.process_article(articleLink, parse_tree_name)
+    data = {'audio':articleAudioFile+".mp3",
+            'tree':parse_tree_name}
     return jsonify(data)
 
-@app.route('/parse-tree-pdf/download', methods=['GET'])
-def download_parse_tree_pdf():
-    return send_file("parse_output/parse-trees.pdf")
+@app.route('/tree/<string:name>', methods=['GET'])
+def download_parse_tree_pdf(name):
+    return send_file("parse_output/" + name)
 
 app.run(port=5000)

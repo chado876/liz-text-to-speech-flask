@@ -6,7 +6,7 @@ import fileUtil as FileUtil
 
 class Parser:
 
-        def generate_parse_trees(pos_tokens_sentences):
+        def generate_parse_trees(pos_tokens_sentences, treeFileName):
             #Extract all parts of speech from any text
             chunker = RegexpParser("""
                                 NP: {<DT>?<JJ>*<NN>}    #To extract Noun Phrases
@@ -22,5 +22,5 @@ class Parser:
                 extractions.append(output)
                 print("Extraction result for sentence \n", output)
                 #output.draw()
-            FileUtil.generate_tree_pdf(extractions)
+            FileUtil.generate_tree_pdf(extractions, treeFileName)
 
