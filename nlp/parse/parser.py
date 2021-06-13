@@ -21,6 +21,6 @@ class Parser:
                 output = chunker.parse(x)
                 extractions.append(output)
                 print("Extraction result for sentence \n", output)
-        #     output.draw()
+                #output.draw()
             FileUtil.generate_tree_pdf(extractions)
 
