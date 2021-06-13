@@ -2,6 +2,7 @@ from .tokenizer import Tokenizer
 from .lemmatizer import Lemmatizer
 from .pos_tagger import PosTagger
 from .stemmer import Stemmatizer
+from ..parse.parser import Parser
 
 class LexicalAnalyzer:
 
@@ -15,14 +16,24 @@ class LexicalAnalyzer:
       tokens_pos = PosTagger.tag_pos(tokens)
       stemmed_tokens = Stemmatizer.stem(tokens)
 
-      print('Sentences: ', sentences)
-      print('Tokens: ', tokens)
-      print('Two Grams: ', two_gram_tokens)
-      print('Stop Words: ', stop_words)
-      print('Normalized Tokens: ', normalized_tokens)
-      print('Lemmatized Tokens: ', lemmatized_tokens)
-      print('Part of Speech of Tokens: ', tokens_pos)
-      print('Stemmatized Tokens: ', stemmed_tokens)
+      pos_sentences = []
+      
+      for sentence in sentences:
+        pos_sentence = (PosTagger.tag_pos(Tokenizer.tokenize(sentence)))
+        pos_sentences.append(pos_sentence)
+
+      for pos_sentence in pos_sentences:
+        Parser.generate_parse_tree(pos_sentence)
+
+
+      # print('Sentences: ', sentences)
+      # print('Tokens: ', tokens)
+      # print('Two Grams: ', two_gram_tokens)
+      # print('Stop Words: ', stop_words)
+      # print('Normalized Tokens: ', normalized_tokens)
+      # print('Lemmatized Tokens: ', lemmatized_tokens)
+      # print('Part of Speech of Tokens: ', tokens_pos)
+      # print('Stemmatized Tokens: ', stemmed_tokens)
 
 
 
