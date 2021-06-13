@@ -22,11 +22,10 @@ class LexicalAnalyzer:
         pos_sentence = (PosTagger.tag_pos(Tokenizer.tokenize(sentence)))
         pos_sentences.append(pos_sentence)
 
-      for pos_sentence in pos_sentences:
-        Parser.generate_parse_tree(pos_sentence)
+      Parser.generate_parse_trees(pos_sentences)
 
 
-      # print('Sentences: ', sentences)
+      print('Sentences: ', sentences)
       # print('Tokens: ', tokens)
       # print('Two Grams: ', two_gram_tokens)
       # print('Stop Words: ', stop_words)

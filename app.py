@@ -5,6 +5,7 @@ import fileUtil as fileUtil
 import speechUtil as speechUtil
 import articleUtil as articleUtil
 from random import randrange
+from nlp.lex.lexical_analyzer import LexicalAnalyzer
 
 
 UPLOAD_FOLDER = './uploads'
@@ -60,7 +61,7 @@ def upload_file():
 def upload_text():
     fileUtil.clean_up_files()
     text = request.form['text']
-    print(text)
+    LexicalAnalyzer.perform_lexical_analysis(text)
 
     randNum = randrange(1,900)
 

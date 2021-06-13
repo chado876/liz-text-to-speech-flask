@@ -5,6 +5,11 @@ import PyPDF2
 import docx2txt
 from pptx import Presentation
 from nlp.lex.lexical_analyzer import LexicalAnalyzer
+from nltk import Tree
+from nltk.draw.util import CanvasFrame
+from nltk.draw import TreeWidget
+import os
+from PyPDF2 import PdfFileMerger
 
 def readFromFile(fileName):
     filePath = "uploads/" + fileName
@@ -43,7 +48,6 @@ def readFromFile(fileName):
             speechUtil.synthesize_and_save_to_file(text, fileNameWithoutExt)
     except:
         print("An error occurred!")
-
     LexicalAnalyzer.perform_lexical_analysis(text)
     return success
         
@@ -64,3 +68,29 @@ def is_file_empty(filePath):
         if not first_char:
             return True
     return False
+
+
+def generate_tree_pdf(extractions):
+    merger = PdfFileMerger()
+
+    for x,extraction in enumerate(extractions):
+        print(str(extraction))
+        cf = CanvasFrame()
+        t = Tree.fromstring(str(extraction))
+        tc = TreeWidget(cf.canvas(),t)
+        tc['node_font'] = 'arial 14 bold'
+        tc['leaf_font'] = 'arial 14'
+        tc['node_color'] = '#005990'
+        tc['leaf_color'] = '#3F8F57'
+        tc['line_color'] = '#175252'
+        cf.add_widget(tc,10,10) # (10,10) offsets
+        ps_file_name = 'tree'+"-"+str(x)+".ps"
+        pdf_file_name = 'tree'+"-"+str(x)+".pdf"
+        cf.print_to_file('parse_output/' + ps_file_name)
+        cf.destroy()
+        os.system('magick convert parse_output/' + ps_file_name + ' parse_output/' + pdf_file_name)
+
+        merger.append('parse_output/' + pdf_file_name)
+    
+    merger.write('parse-trees.pdf')
+    merger.close()
