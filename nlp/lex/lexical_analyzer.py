@@ -16,14 +16,14 @@ class LexicalAnalyzer:
       tokens_pos = PosTagger.tag_pos(tokens)
       stemmed_tokens = Stemmatizer.stem(tokens)
 
-      print('============SENTENCES============ \n ', sentences)
-      print('============TOKENS============ \n ', tokens)
-      print('============BI-GRAMS============ \n ', two_gram_tokens)
-      print('============STOP WORDS============ \n ', stop_words)
-      print('============NORMALIZED TOKENS============ \n ', normalized_tokens)
-      print('============LEMMATIZED TOKENS============ \n ', lemmatized_tokens)
-      print('============PARTS OF SPEECH============ \n', tokens_pos)
-      print('============STEMMATIZED TOKENS============ \n', stemmed_tokens)
+      print('\033[94m============SENTENCES============\033[0m \n ', sentences)
+      print('\n\033[94m============TOKENS============\033[0m \n ', tokens)
+      print('\n\033[94m============BI-GRAMS============\033[0m \n ', two_gram_tokens)
+      print('\n\033[94m============STOP WORDS============\033[0m \n ', stop_words)
+      print('\n\033[94m============NORMALIZED TOKENS============\033[0m \n ', normalized_tokens)
+      print('\n\033[94m============LEMMATIZED TOKENS============\033[0m \n ', lemmatized_tokens)
+      print('\n\033[94m============PARTS OF SPEECH============\033[0m \n', tokens_pos)
+      print('\n\033[94m============STEMMATIZED TOKENS============\033[0m \n', stemmed_tokens)
       
       pos_sentences = []
       
@@ -32,3 +32,4 @@ class LexicalAnalyzer:
         pos_sentences.append(pos_sentence)
 
       Parser.generate_parse_trees(pos_sentences, treeFileName)
+      Parser.print_named_entities(pos_sentences)

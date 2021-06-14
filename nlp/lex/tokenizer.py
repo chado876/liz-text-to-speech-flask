@@ -7,7 +7,7 @@ class Tokenizer:
 
     def tokenize(string):
         pattern = re.compile(r"([-\s.,;!?])+") #identify tokens using -, all white space characters '\s', fullstops '.', commas ',',
-                                               #semicolons ';', exclamation marks '!', and question marks '?' 
+                                               #semicolons ';', exclamation marks '!', and question signs '?' 
         tokens = pattern.split(string)  #split string into tokens using pattern
         tokens = [x for x in tokens if x and x not in '- \t\n.,;!?']   #remove pattern characters from list of tokens
         return tokens
