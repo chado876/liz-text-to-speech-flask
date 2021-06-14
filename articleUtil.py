@@ -13,7 +13,6 @@ def process_article(articleLink, treeFileName):
     article.nlp()
 
     articleText = article.text
-    print("Article text" + articleText)
     LexicalAnalyzer.perform_lexical_analysis(articleText, treeFileName)
     randNum = randrange(1,900)
     filename = "article" + str(randNum)

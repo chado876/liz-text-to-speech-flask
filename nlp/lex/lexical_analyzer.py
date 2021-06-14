@@ -16,6 +16,15 @@ class LexicalAnalyzer:
       tokens_pos = PosTagger.tag_pos(tokens)
       stemmed_tokens = Stemmatizer.stem(tokens)
 
+      print('============SENTENCES============ \n ', sentences)
+      print('============TOKENS============ \n ', tokens)
+      print('============BI-GRAMS============ \n ', two_gram_tokens)
+      print('============STOP WORDS============ \n ', stop_words)
+      print('============NORMALIZED TOKENS============ \n ', normalized_tokens)
+      print('============LEMMATIZED TOKENS============ \n ', lemmatized_tokens)
+      print('============PARTS OF SPEECH============ \n', tokens_pos)
+      print('============STEMMATIZED TOKENS============ \n', stemmed_tokens)
+      
       pos_sentences = []
       
       for sentence in sentences:
@@ -23,23 +32,3 @@ class LexicalAnalyzer:
         pos_sentences.append(pos_sentence)
 
       Parser.generate_parse_trees(pos_sentences, treeFileName)
-
-
-      print('Sentences: ', sentences)
-      # print('Tokens: ', tokens)
-      # print('Two Grams: ', two_gram_tokens)
-      # print('Stop Words: ', stop_words)
-      # print('Normalized Tokens: ', normalized_tokens)
-      # print('Lemmatized Tokens: ', lemmatized_tokens)
-      # print('Part of Speech of Tokens: ', tokens_pos)
-      # print('Stemmatized Tokens: ', stemmed_tokens)
-
-
-
-# text = """"
-
-# The door slammed on the watermelon.
-# She moved forward only because she trusted that the ending she now was going through must be followed by a new beginning.
-# It was always dangerous to drive with him since he insisted the safety cones were a slalom course.
-# """
-# perform_lexical_analysis(text)
