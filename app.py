@@ -6,6 +6,7 @@ import speechUtil as speechUtil
 import articleUtil as articleUtil
 from random import randrange
 from nlp.lex.lexical_analyzer import LexicalAnalyzer
+from nlp.parse.parser import Parser
 
 
 UPLOAD_FOLDER = './uploads'
@@ -16,7 +17,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = "liz"
 app.config['SESSION_TYPE'] = 'filesystem' 
 app.config['SESSION_PERMANENT']= False
-
 
 @app.route('/test')
 def hello():
@@ -47,11 +47,12 @@ def upload_file():
 
             randNum = randrange(1,900)
             parse_tree_name = "parse-tree-"+str(randNum)+".pdf" 
-            task = fileUtil.readFromFile(filename, parse_tree_name)
+            text = fileUtil.readFromFile(filename, parse_tree_name)
+            pos_tokens = LexicalAnalyzer.perform_lexical_analysis(text)
             fileNameWithoutExt = (filename.rsplit( ".", 1 )[ 0 ] )
             data = {'audio':fileNameWithoutExt+".mp3",
-                    'tree':parse_tree_name}
-            if(task):
+                    'text':text}
+            if(pos_tokens):
                 return jsonify(data)
             else:
                 return Response("Something went wrong, please check if your file is valid.",status=400)
@@ -67,14 +68,12 @@ def upload_text():
 
     randNum = randrange(1,900)
     parse_tree_name = "parse-tree-"+str(randNum)+".pdf" 
-    LexicalAnalyzer.perform_lexical_analysis(text, parse_tree_name)
-
-    randNum = randrange(1,900)
+    pos_sentences = LexicalAnalyzer.perform_lexical_analysis(text)
 
     filename = secure_filename("temp" + str(randNum))
     speechUtil.synthesize_and_save_to_file(text, filename)
     data = {'audio':filename+".mp3",
-            'tree':parse_tree_name}
+            'text':text}
     return jsonify(data)
 
 @app.route('/audio/<string:name>', methods=['GET'])
@@ -85,16 +84,32 @@ def get_file(name):
 def process_article():
     fileUtil.clean_up_files()
     articleLink = request.form['articleLink']
-    print(articleLink)
     randNum = randrange(1,900)
+    articleAudioFile = filename = "article" + str(randNum)
+    articleText = articleUtil.process_article(articleLink, articleAudioFile)
+    pos_sentences = LexicalAnalyzer.perform_lexical_analysis(articleText)
     parse_tree_name = "parse-tree-"+str(randNum)+".pdf" 
-    articleAudioFile = articleUtil.process_article(articleLink, parse_tree_name)
     data = {'audio':articleAudioFile+".mp3",
-            'tree':parse_tree_name}
+            'text':articleText}
     return jsonify(data)
 
 @app.route('/tree/<string:name>', methods=['GET'])
 def download_parse_tree_pdf(name):
     return send_file("parse_output/" + name)
+
+@app.route('/parse', methods=['POST'])
+def parse():
+    try:
+        text = request.form['text']
+        print(text)
+        randNum = randrange(1,900)
+        parse_tree_name = "parse-tree-"+str(randNum)+".pdf" 
+        pos_sentences = LexicalAnalyzer.perform_lexical_analysis(text)
+        Parser.generate_parse_trees(pos_sentences, parse_tree_name)
+        Parser.print_named_entities(pos_sentences)
+        data = {'tree':parse_tree_name}
+        return jsonify(data)
+    except:
+        return Response("Something went wrong, please check if your file or text is valid.",status=500)
 
 app.run(port=5000)

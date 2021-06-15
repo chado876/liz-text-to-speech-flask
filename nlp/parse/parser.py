@@ -9,12 +9,37 @@ class Parser:
             #Extract all parts of speech from any text 
             #RegexpParser 
             grammar = RegexpParser("""
-                                NP: {<DT>?<JJ>*<NN>?<NNS>?<NNP>?<NNPS>}    #To extract Noun Phrases
-                                P: {<IN>}               #To extract Prepositions
-                                V: {<V.*>}              #To extract Verbs
-                                PP: {<P> <NP>}          #To extract Prepostional Phrases
-                                VP: {<V> <NP|PP>*}      #To extarct Verb Phrases
+                                NP: {<DT>?<JJ.*>*<NN.*>+}   #To extract Noun Phrases
+                                P: {<IN>}                   #To extract Prepositions
+                                V: {<V.*>}                  #To extract all Verbs
+                                PP: {<P> <NP>}              #To extract Prepositional Phrases
+                                VP: {<V> <NP|PP>*}          #To extract Verb Phrases
+                                FW: {<FW>}                 #To extract Foreign Words
+                                CD : {<CD>}                #To extract Cardinal Digits 
+                                PRP: {<PRP.*>}              #To extract all Pronouns
                                 """)
+
+            # grammar2 = nltk.CFG.fromstring("""  <--------- CFG GRAMMAR USE CASE 
+            # S -> NP VP
+            # NP -> Det N | Det N PP | Det Adj
+            # PP -> P NP
+            # P -> 'PRP' | 'PRP$'
+            # Det -> 'DT'
+            # N -> 'NN' | 'NNS' | 'NNP' | 'NNPS'
+            # V -> 'VB' | 'VBD' | 'VBG' | 'VBP' | 'VBZ'
+            # Adj -> 'JJ' | 'JJR' | 'JJS'
+            # """)
+
+            # cfg_parser = nltk.ChartParser(grammar2)
+
+        
+            # for sentence in pos_tokens_sentences:
+            #     pos_tags = [pos for (token,pos) in sentence]
+            #     print(pos_tags)
+            #     trees = cfg_parser.parse(pos_tags)
+            #     for tree in trees:
+            #         print(tree)
+
             extractions = []
             for x in pos_tokens_sentences:  #parse sentences one by one
                 output = grammar.parse(x) 

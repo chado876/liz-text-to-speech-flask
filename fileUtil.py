@@ -48,8 +48,7 @@ def readFromFile(fileName, treeFileName):
             speechUtil.synthesize_and_save_to_file(text, fileNameWithoutExt)
     except:
         print("An error occurred!")
-    LexicalAnalyzer.perform_lexical_analysis(text, treeFileName)
-    return success
+    return text
         
 
 
