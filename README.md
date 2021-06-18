@@ -14,3 +14,4 @@ pip install python-pptx
 pip install pyttsx3
 pip install newspaper
 ```
+The app.py class can then be run to start the server
